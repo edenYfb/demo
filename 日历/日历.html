@@ -1,0 +1,107 @@
+<head>
+	<meta charset="utf-8" />
+</head>
+<div id="myTime"></div>
+<script type="text/javascript">
+'use strict';
+var calendar={
+	ready:function(node){
+		var divOut=this.c('div'),divIn=this.c('div'),divTop=this.c('div'),divYear=this.c('div'),divMonth=this.c('div'),divWeek=this.c('div'),divDay=this.c('div');
+		divDay.id='divDay';
+		divOut.className='calendar';
+		divOut.style.cssText='width:250px;height:205px;text-align:center;';
+		divIn.style.cssText='width:98%;height:100%;margin:auto;border:1px solid #ccc';
+		divTop.style.cssText='width:100%;height:25px;margin-top:10px;line-height:30px;border:0px solid #000';
+		divYear.style.cssText='width:55%;height:100%;inline;float:left;';
+		divMonth.style.cssText='width:40%;height:100%;inline;float:left;text-align:center';
+		divWeek.style.cssText='width:100%;height:25px;';
+		//日历li统一css
+		this.style('.calendar li{width:14.2%;float:left;list-style:none;}\n.calendar select{width:75%;height:100%;text-align:center;}.triangleL,.triangleR{width:20%;height:25px;inline;float:left;cursor:pointer;}\n.triangleL>div{width:0px;height:0px;margin:auto;margin-top:8px;border-top:4px solid transparent;border-bottom:4px solid transparent;border-right:7px solid #aaa}\n.triangleR>div{width:0px;height:0px;margin:auto;margin-top:8px;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:7px solid #aaa}\n');
+		//年份的html
+		divYear.innerHTML='<div style="width:80%;margin:auto"><div class="triangleL" onclick="calendar.yearClick(1)"><div></div></div><div style="width:60%;height:25px;line-height:25px;inline;float:left;" id="year"></div><div class="triangleR" onclick="calendar.yearClick(-1)"><div></div></div></div>';
+		//月份的html
+		divMonth.innerHTML='<select id="month" onchange="calendar.monthChange()"><option>1月</option><option>2月</option><option>3月</option><option>4月</option><option>5月</option><option>6月</option><option>7月</option><option>8月</option><option>9月</option><option>10月</option><option>11月</option><option>12月</option></select>';
+		divWeek.innerHTML='<li>日</li><li>一</li><li>二</li><li>三</li><li>四</li><li>五</li><li>六</li>';
+		divTop.appendChild(divYear),divTop.appendChild(divMonth);
+		divIn.appendChild(divTop),divIn.appendChild(divWeek),divIn.appendChild(divDay);
+		divOut.appendChild(divIn);
+		arguments[0].appendChild(divOut);
+		//具体天数
+		this.days();
+	},
+	c:function(tag){
+		return document.createElement(arguments[0]);
+	},
+	style:function(string){
+		var style;
+		if(typeof document.getElementsByTagName('style')[0]=='undefined'){
+			style=document.createElement('style');
+			document.getElementsByTagName('head')[0].appendChild(style);
+		}else{
+			style=document.getElementsByTagName('style')[0];
+		}
+		style.innerHTML+=arguments[0]+'\n';
+	},
+	days:function(y,m){
+		if(year.innerHTML==''){
+			var date=new Date();
+			year.innerHTML=date.getUTCFullYear();
+			month.childNodes.item(date.getUTCMonth()).selected=true;
+		}else{
+			divDay.innerHTML='';
+			if(arguments[0]==''){
+				var date=new Date(year.innerHTML,arguments[1],1);
+			}else{
+				year.innerHTML=arguments[0];
+				var date=new Date(arguments[0],month.selectedIndex-(-1),1);
+			}
+		}
+		var m=date.getUTCMonth(),y=date.getUTCFullYear();
+		if(m>0){
+			var m0=m-1,m1=m+1;
+			var y0=y1=y;
+		}else{
+			var m0=11,m1=1;
+			var y0=y-1,y1=y;
+		}
+		var date0=new Date(y0,m0,1);//上月1号
+		var date1=new Date(y,m,1);//本月1号
+		var date2=new Date(y1,m1,1);//下月1号
+		var days=(date2-date1)/86400000;//86400000==24*60*60*1000
+		var lastDays=(date1-date0)/86400000;
+		var week=date1.getUTCDay();
+		var week1=date2.getUTCDay();
+		var now=new Date(),thisM=(now.getUTCFullYear()+''+now.getUTCMonth())==year.innerHTML+month.selectedIndex?1:0;//用于当日变背景色
+		//上月最后几天
+		for(var i=lastDays-week;i<=lastDays;i++){
+			divDay.innerHTML+='<li style="color:#ccc">'+i+'</li>';
+		}
+		//本月天数遍历
+		if(thisM){
+			for(var i=1;i<=days;i++){
+				if(i==(now.getUTCDate()+1)){
+					divDay.innerHTML+='<li style="background-color:orange">'+i+'</li>';
+				}else{
+					divDay.innerHTML+='<li>'+i+'</li>';
+				}
+			}
+		}else{
+			for(var i=1;i<days+1;i++){
+				divDay.innerHTML+='<li>'+i+'</li>';
+			}
+		}
+		//下月开头几天
+		var max=6-week1==0?7:6-week1;
+		for(var i=1;i<=max;i++){
+			divDay.innerHTML+='<li style="color:#ccc">'+i+'</li>';
+		}
+	},
+	yearClick:function(n){
+		this.days(year.innerHTML-n);
+	},
+	monthChange:function(){
+		this.days('',month.selectedIndex-(-1));
+	}
+}
+calendar.ready(myTime);
+</script>
