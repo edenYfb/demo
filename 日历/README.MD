@@ -1,3 +1,3 @@
-useage:
-  html: <div id='a'></div>
-  script: calendar.ready(a)
+#useage:
+  html: ```<div id='a'></div>```
+  script: ```calendar.ready(a)```
