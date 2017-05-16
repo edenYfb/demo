@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<body>
+<canvas id='id_cv'></canvas>
+</body>
+<script>
+id_cv.width=600;
+id_cv.height=400;
+id_cv.style.border='1px solid #000';
+function Circle(id_cv,x0,y0,radius,derection){//画布id/原点X/原点y/大圆半径/方向
+    this.id_cv=id_cv;
+    this.cv=id_cv.getContext('2d');
+    this.radius=radius;
+    this.x0=x0;
+    this.y0=y0;
+    this.step=derection?-Math.PI/180:Math.PI/180;
+    this.bindEvents();
+}
+Circle.prototype={
+    constructor:Circle
+    ,bigBall:function(){
+        this.cv.beginPath();
+        this.cv.arc(this.x0,this.y0,this.radius,0,Math.PI*2);
+        this.cv.stroke();
+        this.big=true;
+    }
+    ,balls:function(num,colors,radius){//个数/色彩数组/小圆半径
+        var r=Math.PI*2/num;
+        var start=[];
+        for(var i=0;i<num;i++){
+            start[start.length]=r*i;
+        }
+        //开始写帧动画
+        var this0=this;
+        var time=setInterval(function(){
+            for(var i=0,x,y,xOld,yOld;i<num;i++){
+                start[i]+=this0.step;
+                x=this0.x0+this0.radius*Math.sin(start[i]);
+                y=this0.y0+this0.radius*Math.cos(start[i]);
+                xOld=this0.x0+this0.radius*Math.sin(start[i]-this0.step);
+                yOld=this0.y0+this0.radius*Math.cos(start[i]-this0.step);
+                this0.cv.clearRect(xOld-radius-0.5,yOld-radius-0.5,radius*2+1,radius*2+1);
+                this0.cv.beginPath();
+                this0.cv.fillStyle=colors[i];
+                this0.cv.arc(x,y,radius,0,Math.PI*2);
+                this0.cv.fill();
+                if(this0.big)this0.bigBall(this0.x0,this0.y0,this0.radius);//是否有大圆，可选
+            }          
+        },50);
+
+    }
+    ,step:function(n){
+        return this.step=derection?-Math.PI/180:Math.PI/180;
+    }
+    ,bindEvents:function(){
+            var this0=this;
+            this.id_cv.addEventListener('mouseover',function(){
+                  this0.step=this0.step/4;          
+            });
+            this.id_cv.addEventListener('mouseout',function(){
+                  this0.step=this0.step*4;          
+            });
+    }
+};
+var c1=new Circle(id_cv,id_cv.width/2,id_cv.height/2,100,false);
+c1.bigBall();
+c1.balls(5,['red','green','orange','blue','gray'],20);
+
+var c2=new Circle(id_cv,id_cv.width/2,id_cv.height/2,200,true);
+//c2.bigBall();
+c2.balls(6,['red','green','orange','blue','gray','hotpink'],20);
+</script>
+</html>

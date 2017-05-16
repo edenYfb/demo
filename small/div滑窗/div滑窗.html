@@ -1,0 +1,56 @@
+<head>
+<meta charset='UTF-8'/>
+<script src='./jquery.min.js'></script>
+<style>
+*{margin:0;padding:0;}
+.out{width:660px;height:200px;margin:0 auto;margin-top:100px;}
+.outDiv{width:30px;height:100%;background:orange;border:1px solid;display:block-inline;float:left;text-align:center;position:relative;top:0px;left:0px;}
+.outBig{width:402px;height:100%;background:yellow;border:1px solid;display:block-inline;float:left;text-align:center;position:relative;top:0px;left:0px;}
+</style>
+</head>
+<div class='out' id='coolBox'>
+	<div value='0' class='outDiv'>0</div>
+	<div value='1' class='outDiv'>1</div>
+	<div value='2' class='outDiv'>2</div>
+	<div value='3' class='outDiv'>3</div>
+	<div value='4' class='outBig'>4</div>
+	<div value='5' class='outDiv'>5</div>
+	<div value='6' class='outDiv'>6</div>
+	<div value='7' class='outDiv'>7</div>
+	<div value='8' class='outDiv'>8</div>
+</div>
+<script>
+$('.outDiv').hover(function(){
+	var big=$('.outBig');
+	var n=big.index();
+	var m=$(this).index();
+	var end0=n-m;
+	var end1=m-n;
+	console.log(n+'|'+m);
+	if($(this).index()<big.index()){
+		switch(end0){
+			case 2:big.prev().insertAfter(big);break;
+			case 3:big.prev().insertAfter(big);big.prev().insertAfter(big);break;
+			case 4:big.prev().insertAfter(big);big.prev().insertAfter(big);big.prev().insertAfter(big);break;
+		}
+		if($(this).next().attr('value')==4){
+			$(this).css('background','red');
+		}
+	}else{
+
+		switch(end1){
+			case 2:big.next().insertBefore(big);break;
+			case 3:big.next().insertBefore(big);big.next().insertBefore(big);break;
+			case 4:big.next().insertBefore(big);big.next().insertBefore(big);big.next().insertBefore(big);break;
+		}
+		if($(this).prev().attr('value')==4){
+			$(this).css('background','red');
+		}
+	}
+	},function(){
+		if($(this)[0].style.backgroundColor=='red'){
+			this.style.backgroundColor='orange';
+		}
+	}
+);
+</script>

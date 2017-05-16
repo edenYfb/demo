@@ -1,0 +1,84 @@
+<style>
+*{margin:0;padding:0;}
+body{background:black;overflow:hidden;}
+div{display:block-inline;float:left;word-break:break-all;}
+</style>
+<body></body>
+<script>
+function HeiKer(){
+	this.str='1234567890qwertyuiopasdfghjklzxcvbnm';
+	this.length=0;
+	this.textLong=18;
+	this.div=[];
+	this.max=0;
+	this.n=0;
+	this.m=0;
+	this.divLeft=0;
+	this.divTop=0;
+	this.step=0;
+}
+HeiKer.prototype.begin=function(){
+	this.length=this.str.length;
+	this.max=80+Math.round(Math.random()*100);
+	this.step=Math.ceil(220/this.textLong);
+}
+HeiKer.prototype.left=function(){
+	for(;;){
+		var bodyWidth=document.body.clientWidth;
+		var left=Math.round(Math.random()*bodyWidth);
+		if(left<bodyWidth-10&&left%5==0){
+			break;
+		}
+	}
+	return left;
+
+}
+HeiKer.prototype.action=function(){
+	var my=this;
+	var time=setInterval(function(){
+		if(my.n==0){
+			for(var i=0;i<my.max;i++){
+				my.divTop=-420-Math.round(Math.random()*1000);
+				my.divLeft=my.left();
+				my.div[i]=document.createElement('div');
+				document.body.appendChild(my.div[i]);
+				for(var r=0;r<my.textLong;r++){
+					var span=document.createElement('span');
+					span.style.cssText='color:rgb(0,'+r*my.step+',0);';
+					my.div[i].appendChild(span);
+				}
+				my.div[i].style.cssText='width:0px;color:#0f0;position:absolute;top:'+my.divTop+';left:'+my.divLeft+';';
+			}
+			my.n=1;
+		}
+	for(var r=0;r<my.max;r++){
+		if(my.m==4){
+			for(var x=0;x<my.textLong;x++){
+				var span=my.div[r].children[x];
+				span.innerHTML=my.str.substr(Math.round(Math.random()*my.length)-1,1);
+				if(span.value==0&&Math.random()>0.8){
+					span.style.cssText='color:rgb(0,'+x*my.step+',0);font-weight:400;ffont-size:14px;';
+					span.value=1;					
+				}
+				if(x>14&&Math.random()*Math.random()*Math.random()>0.8){
+					span.style.cssText='color:rgb(200,255,100);font-weight:800;font-size:16px;';
+					span.value=0;
+				}
+			}
+			my.m=0;
+		}
+		my.m++;
+		var tops=parseInt(my.div[r].style.top)+5;
+		my.div[r].style.top=tops;
+		if(tops>600){
+			my.div[r].style.top=-420;
+			my.divLeft=my.left();
+			my.div[r].style.left=my.divLeft;
+		}
+	}
+	},10);
+}
+var heiKer=new HeiKer();
+heiKer.begin();
+heiKer.action();
+</script>
